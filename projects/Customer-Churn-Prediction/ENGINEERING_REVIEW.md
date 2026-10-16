@@ -1,7 +1,7 @@
 # Engineering Review — Customer Churn Prediction
 
 **Repository:** `Abdulrahman181/Customer-Churn-Prediction`  
-**Local path:** `/home/ubuntu/github_priority/Customer-Churn-Prediction`  
+**Local path:** `the original project checkout/Customer-Churn-Prediction`  
 **Review date:** 2026-10-13  
 **Scope:** all files present at review start (`README.md` and `Customer Churn prediction.ipynb`), plus the repaired notebook and supporting project files.
 

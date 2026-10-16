@@ -37,7 +37,7 @@ All checks below were run in the repository working tree:
 
 ```text
 python validate_notebook.py
-Notebook validation passed: /home/ubuntu/github_priority/Heart-Surgery/cardiac-surgery-and-percutaneous (1).ipynb
+Notebook validation passed: the original project checkout/Heart-Surgery/cardiac-surgery-and-percutaneous (1).ipynb
 
 python -m unittest discover -s tests -v
 Ran 2 tests in 0.002s — OK

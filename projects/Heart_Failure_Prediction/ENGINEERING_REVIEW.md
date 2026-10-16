@@ -3,7 +3,7 @@
 ## Scope and evidence
 
 - Repository audited: `Abdulrahman181/Heart_Failure_Prediction`
-- Audit path: `/home/ubuntu/github_priority/Heart_Failure_Prediction`
+- Audit path: `the original project checkout/Heart_Failure_Prediction`
 - Audited files: `Heart_Failure_Prediction.ipynb`, `README.md`, `requirements.txt`, `.gitignore`, and the added `validate_repository.py`.
 - The remote baseline contained one notebook with 98 cells and 74 saved outputs. The working tree already had a local documentation/notebook-repair commit before this review; this review adds a further local commit and does not push to GitHub.
 - No Python source files existed in the baseline. The notebook was extracted to Python temporarily for AST/Ruff checks and was not executed end-to-end.

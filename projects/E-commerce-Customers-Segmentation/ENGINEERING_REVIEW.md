@@ -2,7 +2,7 @@
 
 ## Scope
 
-Reviewed the repository at `/home/ubuntu/github_priority/E-commerce-Customers-Segmentation` on 2026-10-13. The review covered the tracked Jupyter notebook, README, repository contents, dataset artifact, and dependency/runtime assumptions. No other repository was changed and no changes were pushed to GitHub.
+Reviewed the repository at `the original project checkout/E-commerce-Customers-Segmentation` on 2026-10-13. The review covered the tracked Jupyter notebook, README, repository contents, dataset artifact, and dependency/runtime assumptions. No other repository was changed and no changes were pushed to GitHub.
 
 ## Starting state
 
