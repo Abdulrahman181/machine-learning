@@ -1,0 +1,19 @@
+# Local data and generated model artifacts
+data/
+*.csv
+*.h5
+*.keras
+*.pkl
+*.pickle
+*.joblib
+
+# Python and notebook caches
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Local reports and editor files
+.DS_Store

@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.DS_Store
+
+# Local datasets and generated experiment outputs
+data/
+*.csv
+*.parquet
+*.joblib
+
+# Keep the checked-in inference artifact model.pkl; ignore ad-hoc pickles.
+*.pkl
+!model.pkl

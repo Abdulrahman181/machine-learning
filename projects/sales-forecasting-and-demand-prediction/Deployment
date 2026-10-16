@@ -1,0 +1,9 @@
+"""Compatibility entry point for the Streamlit application.
+
+Run from the repository root with: streamlit run Deployment
+"""
+from App.streamlit_app import main
+
+
+if __name__ == "__main__":
+    main()

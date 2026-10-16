@@ -1,0 +1,9 @@
+numpy>=1.23,<3
+pandas>=1.5,<3
+matplotlib>=3.6,<4
+seaborn>=0.12,<1
+scikit-learn>=1.2,<2
+jupyter>=1.0,<2
+ruff>=0.6,<1
+# Optional model candidate (the notebook runs without this native dependency):
+# xgboost>=1.7,<3

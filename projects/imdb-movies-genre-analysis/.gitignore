@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+.DS_Store
+
+# Dataset and generated model/artifact files
+data/
+*.csv
+*.parquet
+*.pkl
+*.joblib
+artifacts/
+outputs/

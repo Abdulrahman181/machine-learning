@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.env.*
+
+# Local data and generated artifacts
+data/
+artifacts/
+mlruns/
+*.csv
+*.parquet
+*.pkl
+*.joblib
+*.png
+*.log

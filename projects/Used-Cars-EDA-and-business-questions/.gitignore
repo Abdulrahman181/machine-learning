@@ -1,0 +1,23 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local data and generated analysis artifacts
+data/
+*.csv
+*.parquet
+*.feather
+outputs/
+figures/
+
+# Jupyter runtime files
+.ipynb_checkpoints/
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
