@@ -1,0 +1,9 @@
+# Lightweight, deterministic test environment for the leakage-aware pipeline.
+# The full model stack remains in requirements.txt; these packages cover all tests.
+numpy>=1.24,<3
+pandas>=2.0,<3
+scikit-learn>=1.3,<2
+joblib>=1.3,<2
+pytest>=7.4,<9
+nbformat>=5.9,<6
+ruff>=0.6,<1

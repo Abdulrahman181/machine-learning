@@ -18,7 +18,7 @@ python -m pip install -r requirements.txt
 python -m fraud_detection --data data/PS_20174392719_1491204439457_log.csv
 ```
 
-The default command validates the file and prints its row count only. A missing file or invalid schema stops with an actionable error; no synthetic data is substituted.
+The default command validates the file and prints its row count only. A missing file or invalid schema stops with a concise actionable error and exit code `2`; no synthetic data is substituted.
 
 To train locally (this may require substantial memory/time for the full PaySim file):
 
@@ -60,7 +60,7 @@ python -m compileall -q fraud_detection.py tests
 pytest -q
 ```
 
-The tests cover missing-data/schema and numeric-domain failures, whole-step chronological boundaries, train-only feature state and label alignment, fixed feature ordering, metric and sampling contracts, artifact metadata compatibility, and validation-only threshold selection. They do not claim a full model run without the real dataset and model dependencies.
+For the lightweight CI/test environment (without installing the optional model libraries), use `python -m pip install -r requirements-test.txt`. The repository also provides `pyproject.toml` with the supported Python range and Ruff/Pytest configuration. The tests cover missing-data/schema and numeric-domain failures, concise CLI errors, whole-step chronological boundaries, train-only feature state and label alignment, fixed feature ordering, metric and sampling contracts, artifact metadata compatibility, and validation-only threshold selection. They do not claim a full model run without the real dataset and model dependencies.
 
 ## Repository layout
 

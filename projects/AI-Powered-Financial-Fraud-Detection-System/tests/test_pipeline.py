@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -35,6 +37,18 @@ def tiny_frame() -> pd.DataFrame:
 def test_missing_data_fails_with_actionable_message(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="PaySim CSV not found"):
         load_paysim(tmp_path / "missing.csv")
+
+
+def test_cli_missing_data_is_concise_and_traceback_free(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [sys.executable, "fraud_detection.py", "--data", str(tmp_path / "missing.csv")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert result.stderr.startswith("Error: PaySim CSV not found")
+    assert "Traceback" not in result.stderr
 
 
 def test_schema_failure_names_missing_columns(tmp_path: Path) -> None:

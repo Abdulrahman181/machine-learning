@@ -54,3 +54,10 @@ jobs:
           else
             echo 'No self-contained portfolio test suite selected; dependency-heavy project tests require their project-specific environment.'
           fi
+      - name: Test PaySim fraud pipeline
+        if: ${{ hashFiles('projects/AI-Powered-Financial-Fraud-Detection-System/requirements-test.txt') != '' }}
+        working-directory: projects/AI-Powered-Financial-Fraud-Detection-System
+        run: |
+          python -m pip install --disable-pip-version-check -q -r requirements-test.txt
+          python -m ruff check .
+          python -m pytest -q
