@@ -1,0 +1,22 @@
+[project]
+name = "paysim-fraud-detection"
+version = "0.1.0"
+description = "Leakage-aware PaySim fraud-detection reference pipeline"
+requires-python = ">=3.10,<3.13"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+exclude = ["*.ipynb", ".venv-review"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]

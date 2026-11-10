@@ -84,3 +84,24 @@ The implementation is now centered on `fraud_detection.py`. It validates real in
 - The full six-million-row training, real artifact reload, memory/latency behavior, and final test metrics remain unverified until the user supplies PaySim data and installs the core dependencies.
 - The prior exposed Kaggle credential remains in Git history and must be revoked/rotated; history rewriting was intentionally not performed.
 - `predict_with_artifacts` is a local library helper, not an authenticated/rate-limited production API. Production use still needs access control, safe transport, monitoring/drift policy, calibration review, and operational rollback/versioning.
+
+
+### Remediation pass — 2026-11-10
+
+The following safe fixes were applied after the second senior review:
+
+- Added concise CLI error handling for expected missing-data, schema, dependency, and configuration failures. The CLI now emits one actionable `Error:` line and exits with status `2` instead of exposing a traceback.
+- Added `requirements-test.txt` for a lightweight, dependency-complete test environment that does not install the optional XGBoost, LightGBM, or CatBoost training stack.
+- Added `pyproject.toml` with the supported Python range (`>=3.10,<3.13`) and shared Ruff/Pytest configuration.
+- Extended `.github/workflows/static-quality.yml` to install the lightweight test environment, run Ruff, and execute this project's test suite on pull requests and pushes to `main`.
+- Updated the README with the test environment, CLI exit behavior, and current validation boundaries.
+
+Current local evidence from the isolated test environment:
+
+- `ruff check .` — passed.
+- `python -m pytest -q` — **11 passed**.
+- `python -m compileall -q fraud_detection.py tests` — passed.
+- Notebook JSON and Python AST validation — passed for 11 cells.
+- Missing-data CLI smoke test — exited `2`, emitted the actionable message, and emitted no traceback.
+
+The historical Kaggle credential issue, real PaySim training, model-artifact reload against trained models, and history rewriting remain intentionally unresolved external/operational items.

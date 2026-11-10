@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -553,12 +554,16 @@ def main() -> None:
     parser.add_argument("--train", action="store_true", help="Train models; otherwise validate only")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts"))
     args = parser.parse_args()
-    if not args.train:
-        frame = load_paysim(args.data)
-        print(f"Validated {len(frame):,} rows; no model training was requested.")
-        return
-    metrics = run_training(args.data, args.output_dir)
-    print(json.dumps(metrics, indent=2))
+    try:
+        if not args.train:
+            frame = load_paysim(args.data)
+            print(f"Validated {len(frame):,} rows; no model training was requested.")
+            return
+        metrics = run_training(args.data, args.output_dir)
+        print(json.dumps(metrics, indent=2))
+    except (FileNotFoundError, ModuleNotFoundError, OSError, TypeError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        raise SystemExit(2) from exc
 
 
 if __name__ == "__main__":
