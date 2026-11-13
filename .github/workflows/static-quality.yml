@@ -46,7 +46,7 @@ jobs:
           PY
       - name: Run self-contained portfolio tests
         run: |
-          python -m pip install --disable-pip-version-check -q pytest scikit-learn ruff
+          python -m pip install --disable-pip-version-check -q numpy pandas pytest scikit-learn ruff
           if [ -d projects/agentic-data-analyst ]; then
             PYTHONPATH=projects/agentic-data-analyst pytest -q projects/agentic-data-analyst/tests
           elif [ -d projects/python-ml-pipeline-cli ]; then
