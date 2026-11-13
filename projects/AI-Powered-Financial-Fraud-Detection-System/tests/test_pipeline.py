@@ -86,6 +86,34 @@ def test_features_are_fixed_and_fit_from_training_only() -> None:
     assert np.isfinite(features.to_numpy()).all()
 
 
+def test_pre_decision_balance_features_ignore_post_event_columns() -> None:
+    frame = tiny_frame()
+    frame["oldbalanceOrg"] = [100.0, 90.0, 300.0, 260.0, 500.0, 450.0]
+    frame["oldbalanceDest"] = [0.0, 10.0, 20.0, 60.0, 0.0, 50.0]
+    # These fields are intentionally extreme. They must not change the early
+    # decision feature matrix because they are only known after the operation.
+    frame["newbalanceOrig"] = [999999.0] * len(frame)
+    frame["newbalanceDest"] = [999999.0] * len(frame)
+    frame["isFlaggedFraud"] = [1] * len(frame)
+    train, _, _ = chronological_split(frame, 0.5, 0.25)
+    state = fit_feature_state(train)
+    features = transform_features(train, state, training_period=True)
+    assert features["orig_balance_before"].iloc[0] == 100.0
+    assert features["dest_balance_before"].iloc[0] == 0.0
+    assert features["orig_balance_zero"].iloc[0] == 0.0
+    assert features["dest_balance_zero"].iloc[0] == 1.0
+    assert "newbalanceOrig" not in features.columns
+    assert "newbalanceDest" not in features.columns
+    assert "isFlaggedFraud" not in features.columns
+
+
+def test_negative_pre_decision_balance_is_rejected() -> None:
+    frame = tiny_frame()
+    frame["oldbalanceOrg"] = [-1.0] + [0.0] * (len(frame) - 1)
+    with pytest.raises(ValueError, match="oldbalanceOrg must contain non-negative"):
+        chronological_split(frame)
+
+
 def test_threshold_selection_returns_probability_cutoff() -> None:
     threshold = select_threshold(pd.Series([0, 1, 0, 1]), np.array([0.1, 0.9, 0.2, 0.8]))
     assert 0.0 <= threshold <= 1.0

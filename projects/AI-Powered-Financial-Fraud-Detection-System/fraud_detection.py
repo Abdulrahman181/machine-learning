@@ -28,12 +28,19 @@ REQUIRED_COLUMNS = {
     "nameDest",
     "isFraud",
 }
-DROP_COLUMNS = {
-    "isFlaggedFraud",
+# These columns are observed before authorization and are safe for the early
+# decision model when the upstream system exposes them at scoring time.
+PRE_DECISION_BALANCE_COLUMNS = {
     "oldbalanceOrg",
-    "newbalanceOrig",
     "oldbalanceDest",
+}
+# Post-transaction balances and rule flags are intentionally excluded from the
+# early decision model: they are either unavailable at decision time or act as
+# a target proxy. They may be used by a separate post-event investigation job.
+POST_EVENT_COLUMNS = {
+    "newbalanceOrig",
     "newbalanceDest",
+    "isFlaggedFraud",
 }
 FEATURE_COLUMNS = [
     "amount",
@@ -54,9 +61,16 @@ FEATURE_COLUMNS = [
     "type_TRANSFER",
     "type_CASH_OUT",
     "high_transfer_risk",
+    "orig_balance_before",
+    "dest_balance_before",
+    "amount_to_orig_balance",
+    "amount_to_dest_balance",
+    "orig_balance_zero",
+    "dest_balance_zero",
 ]
 ALLOWED_TYPES = {"CASH_IN", "CASH_OUT", "DEBIT", "PAYMENT", "TRANSFER"}
 NUMERIC_COLUMNS = ("step", "amount", "isFraud")
+OPTIONAL_NUMERIC_COLUMNS = tuple(sorted(PRE_DECISION_BALANCE_COLUMNS))
 
 
 @dataclass(frozen=True)
@@ -97,6 +111,14 @@ def _validated_frame(
         if values.isna().any() or not np.isfinite(values.to_numpy(dtype=float)).all():
             raise ValueError(f"{context}.{column} must contain finite numeric values")
         normalized[column] = values
+    for column in OPTIONAL_NUMERIC_COLUMNS:
+        if column in normalized.columns:
+            values = pd.to_numeric(normalized[column], errors="coerce")
+            if values.isna().any() or not np.isfinite(values.to_numpy(dtype=float)).all():
+                raise ValueError(f"{context}.{column} must contain finite numeric values")
+            if (values < 0).any():
+                raise ValueError(f"{context}.{column} must contain non-negative values")
+            normalized[column] = values.astype(float)
     if (normalized["step"] < 0).any() or (normalized["step"] % 1 != 0).any():
         raise ValueError(f"{context}.step must contain non-negative integers")
     if (normalized["amount"] < 0).any():
@@ -236,6 +258,19 @@ def transform_features(
     source["type_TRANSFER"] = (source["type"] == "TRANSFER").astype(np.int8)
     source["type_CASH_OUT"] = (source["type"] == "CASH_OUT").astype(np.int8)
     source["high_transfer_risk"] = source["type_TRANSFER"] * source["is_high_amount"]
+    # Balance fields are optional because some upstream scoring systems do not
+    # expose them. Only pre-decision balances are used; post-event balances and
+    # isFlaggedFraud are deliberately ignored even when present in the frame.
+    source["orig_balance_before"] = source.get("oldbalanceOrg", 0.0)
+    source["dest_balance_before"] = source.get("oldbalanceDest", 0.0)
+    source["amount_to_orig_balance"] = source["amount"] / (
+        source["orig_balance_before"] + 1e-6
+    )
+    source["amount_to_dest_balance"] = source["amount"] / (
+        source["dest_balance_before"] + 1e-6
+    )
+    source["orig_balance_zero"] = (source["orig_balance_before"] <= 0).astype(np.int8)
+    source["dest_balance_zero"] = (source["dest_balance_before"] <= 0).astype(np.int8)
     return source[FEATURE_COLUMNS].replace([np.inf, -np.inf], np.nan).fillna(0).astype(np.float32)
 
 

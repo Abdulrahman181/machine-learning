@@ -45,9 +45,10 @@ predictions = predict_with_artifacts(frame, "artifacts")
 1. Validate the required PaySim schema and non-empty, two-class labels.
 2. Sort by `step` and split into approximately **60% chronological train / 20% validation / 20% final test** using whole `step` groups. No random split is used, and rows from one time step cannot cross a boundary.
 3. Fit amount quantiles, user aggregates, and destination popularity on training data only. Training user history uses prior rows only; validation/test use frozen training-period aggregates.
-4. Downsample negatives only in the training period. Validation and final test retain their natural class distribution.
-5. Train seeded XGBoost, LightGBM, and CatBoost models with single-threaded inference settings for more stable reruns, then combine them with weights 0.3/0.3/0.4.
-6. Select the operating threshold on validation and report it once on the untouched final test. Report ROC-AUC, average precision, precision, and recall; accuracy is intentionally not used as the primary fraud metric.
+4. Use only pre-decision balance fields (`oldbalanceOrg`, `oldbalanceDest`) when they are available at authorization time. Post-event balances (`newbalanceOrig`, `newbalanceDest`) and `isFlaggedFraud` are excluded from the early decision model because they are unavailable before execution or can act as target proxies.
+5. Downsample negatives only in the training period. Validation and final test retain their natural class distribution.
+6. Train seeded XGBoost, LightGBM, and CatBoost models with single-threaded inference settings for more stable reruns, then combine them with weights 0.3/0.3/0.4.
+7. Select the operating threshold on validation and report it once on the untouched final test. Report ROC-AUC, average precision, precision, and recall; accuracy is intentionally not used as the primary fraud metric.
 
 The notebook is an executable walkthrough of these functions. It contains no stored outputs, credentials, Colab upload calls, shell magics, or local absolute paths. It stops at data loading if the CSV is absent.
 
